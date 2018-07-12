@@ -8,7 +8,7 @@
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function ting_subsearch_translate_form_ting_admin_ting_settings_alter(&$form, &$form_state) {
+function ting_subsearch_translate_form_ting_search_admin_settings_alter(&$form, &$form_state) {
 
   $facets = array();
   foreach (variable_get('ding_facetbrowser_facets', array()) as $facet) {
@@ -36,25 +36,30 @@ function ting_subsearch_translate_form_ting_admin_ting_settings_alter(&$form, &$
   $form['subsearch_settings']['subsearch_translate']['#tree'] = FALSE;
   $form['subsearch_settings']['subsearch_translate']['#description'] = t('With translated subsearch you get the option for translated keys when the challenge is passed.');
 
+  $form['subsearch_settings']['subsearch_translate']['ting_subsearch_translate_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Google translation service url'),
+    '#default_value' => variable_get('ting_subsearch_translate_url', 'https://www.googleapis.com/language/translate/v2'),
+  );
+
   $form['subsearch_settings']['subsearch_translate']['ting_subsearch_translate_google_key'] = array(
     '#type' => 'textfield',
     '#title' => t('Google Cloud Translation API key'),
-    '#default_value' => variable_get('ting_subsearch_translate_google_key', ''),
     '#description' => t('You need to have an API key configured with billing for this to work. take a look at <a href="https://cloud.google.com/translate/pricing">Pricing</a>'),
+    '#default_value' => variable_get('ting_subsearch_translate_google_key', ''),
   );
 
   $form['subsearch_settings']['subsearch_translate']['ting_subsearch_translate_factor'] = array(
     '#type' => 'textfield',
-    '#title' => t('Challenge: Factor for calculating ratio between nonfiction and fiction'),
-    '#default_value' => variable_get('ting_subsearch_translate_factor', 2),
-    '#description' => t('The condition is as following (nonfiction / factor) > fiction'),
+    '#title' => t('Ratio between nonfiction and fiction'),
+    '#description' => t('The percent of nonfiction more than fiction to trigger the translation'),
+    '#default_value' => variable_get('ting_subsearch_translate_factor', 50),
   );
 
-  $form['subsearch_settings']['subsearch_translate']['ting_subsearch_translate_additional_url_params_inlimit'] = array(
+  $form['subsearch_settings']['subsearch_translate']['ting_subsearch_translate_min_hits'] = array(
     '#type' => 'textfield',
-    '#title' => t('Additional URL parameters for link in message'),
-    '#default_value' => variable_get('ting_subsearch_translate_additional_url_params_inlimit', ''),
-    '#description' => t('Parameters goes like this param1=value1&amp;param2=value2. Do not assume that the first parameter is the first actual. The system will figure it out.'),
+    '#title' => t('Minimum translations hits'),
+    '#description' => t('The minimum number of hit for a given translation before showing the box. Set it to \'0\' to always show the box.'),
+    '#default_value' => variable_get('ting_subsearch_translate_min_hits', 0),
   );
-
 }
