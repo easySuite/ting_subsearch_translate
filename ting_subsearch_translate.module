@@ -43,8 +43,14 @@ function ting_subsearch_translate_ting_search_results_prefix($keys, $conditions,
   $percent = 100 - (($fiction / $nonfiction) * 100);
   if ((variable_get('ting_subsearch_translate_factor', 50)) < $percent) {
     $translated_keys = ting_subsearch_common_suggested_keys($keys, 'ting_subsearch_translate_suggest_translated_keys');
+
+    // If no translation was found.
+    if ($translated_keys == FALSE) {
+      return $message;
+    }
+
+    // The two search are the same. So no need to do extra search query.
     if (drupal_strtolower($translated_keys) == drupal_strtolower($results->getSearchRequest()->getFullTextQuery())) {
-      // The two search are the same. So no need to do extra search query.
       return $message;
     }
 
